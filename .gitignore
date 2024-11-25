@@ -1,0 +1,23 @@
+# .env file
+.env
+
+# Python bytecode files
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
+
+# PyCharm project files
+.idea/
+
+# Other sensitive files
+*.key
+*.pem

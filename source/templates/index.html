@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Playlist Manager</title>
+    <!-- Подключение Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        h1, h2 {
+            color: #343a40;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary, .btn-danger, .btn-warning, .btn-info {
+            border-radius: 20px;
+        }
+        ul.list-group li {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        ul.list-group li:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Менеджер Плейлистов</h1>
+
+        <!-- Форма для добавления нового плейлиста -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="POST" action="/">
+                    <div class="mb-3">
+                        <label for="playlist_link" class="form-label">Введите ссылку на плейлист:</label>
+                        <input type="text" id="playlist_link" name="playlist_link" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Загрузить плейлист</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Кнопка для очистки базы данных -->
+        <div class="text-end mb-3">
+            <form method="GET" action="/clear">
+                <button type="submit" class="btn btn-danger">Очистить всё</button>
+            </form>
+        </div>
+
+        <!-- Список загруженных плейлистов -->
+        <h2 class="mb-3">Загруженные плейлисты</h2>
+        <ul class="list-group">
+            {% for playlist in playlists %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <b>{{ playlist[1] }}</b> (Пользователь: {{ playlist[2] }})
+                    </span>
+                    <div>
+                        <form method="POST" action="{{ url_for('update_playlist', playlist_id=playlist[0]) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-warning">Обновить</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('delete_playlist', playlist_id=playlist[0]) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                        </form>
+                        <form method="GET" action="{{ url_for('playlist_changes', playlist_id=playlist[0]) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-info">Изменения</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

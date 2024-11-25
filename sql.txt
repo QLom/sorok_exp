@@ -1,0 +1,113 @@
+-- Table: public.artists
+
+-- DROP TABLE IF EXISTS public.artists;
+
+CREATE TABLE IF NOT EXISTS public.artists
+(
+    id integer NOT NULL DEFAULT nextval('artists_id_seq'::regclass),
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    track_id integer,
+    playlist_id integer,
+    CONSTRAINT artists_pkey PRIMARY KEY (id),
+    CONSTRAINT artists_playlist_id_fkey FOREIGN KEY (playlist_id)
+        REFERENCES public.playlists (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT artists_track_id_fkey FOREIGN KEY (track_id)
+        REFERENCES public.tracks (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.artists
+    OWNER to postgres;
+
+-- Table: public.playlist_versions
+
+-- DROP TABLE IF EXISTS public.playlist_versions;
+
+CREATE TABLE IF NOT EXISTS public.playlist_versions
+(
+    id integer NOT NULL DEFAULT nextval('playlist_versions_id_seq'::regclass),
+    playlist_id integer,
+    change_type character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    track_title character varying(255) COLLATE pg_catalog."default",
+    "timestamp" timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT playlist_versions_pkey PRIMARY KEY (id),
+    CONSTRAINT playlist_versions_playlist_id_fkey FOREIGN KEY (playlist_id)
+        REFERENCES public.playlists (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.playlist_versions
+    OWNER to postgres;
+
+-- Table: public.playlists
+
+-- DROP TABLE IF EXISTS public.playlists;
+
+CREATE TABLE IF NOT EXISTS public.playlists
+(
+    id integer NOT NULL DEFAULT nextval('playlists_id_seq'::regclass),
+    title character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    user_id integer,
+    kind integer NOT NULL,
+    CONSTRAINT playlists_pkey PRIMARY KEY (id),
+    CONSTRAINT playlists_title_user_id_kind_key UNIQUE (title, user_id, kind),
+    CONSTRAINT playlists_user_id_fkey FOREIGN KEY (user_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.playlists
+    OWNER to postgres;
+
+-- Table: public.tracks
+
+-- DROP TABLE IF EXISTS public.tracks;
+
+CREATE TABLE IF NOT EXISTS public.tracks
+(
+    id integer NOT NULL DEFAULT nextval('tracks_id_seq'::regclass),
+    title character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    duration integer,
+    playlist character varying(255) COLLATE pg_catalog."default",
+    album character varying(255) COLLATE pg_catalog."default",
+    year integer,
+    playlist_id integer,
+    CONSTRAINT tracks_pkey PRIMARY KEY (id),
+    CONSTRAINT tracks_playlist_id_fkey FOREIGN KEY (playlist_id)
+        REFERENCES public.playlists (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.tracks
+    OWNER to postgres;
+
+-- Table: public.users
+
+-- DROP TABLE IF EXISTS public.users;
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
+    user_id character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT users_user_id_key UNIQUE (user_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.users
+    OWNER to postgres;
